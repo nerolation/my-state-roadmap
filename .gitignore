@@ -1,0 +1,31 @@
+# --- Secrets / credentials — never commit ---
+*.pem
+*.key
+*.ppk
+*.p12
+id_rsa*
+id_ed25519*
+*_ed25519
+*_ed25519.pub
+*_rsa
+*.asc
+.env
+.env.*
+*.secret
+secrets.*
+credentials*
+.netrc
+.npmrc
+
+# --- Large / irrelevant local working data (Ethereum EIPs clones) ---
+EIPs/
+wam/
+
+# --- OS / editor / tooling cruft ---
+.DS_Store
+Thumbs.db
+*.swp
+*~
+node_modules/
+.vscode/
+.idea/

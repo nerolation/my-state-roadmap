@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ethereum State Roadmap</title>
+<meta name="description" content="A minimal strawman roadmap of Ethereum state proposals — lanes by what they do to state, forks left to right." />
+
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<style type="text/tailwindcss">
+  @import "tailwindcss";
+
+  @theme {
+    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --color-ink: #0f172a;
+  }
+
+  /* Lane colors as plain custom properties. They are referenced only from inline
+     styles / JS, which Tailwind does not scan, so keeping them out of @theme stops
+     Tailwind v4 from tree-shaking them away. */
+  :root {
+    --color-laneA: #ea580c; /* curb growth    */
+    --color-laneB: #2563eb; /* access pricing */
+    --color-laneC: #7c3aed; /* structure      */
+    --color-laneD: #0d9488; /* statelessness  */
+    --color-laneE: #e11d48; /* lifecycle      */
+    --color-laneF: #4f46e5; /* accounts/value */
+    --color-ok:    #16a34a; /* confirmed      */
+  }
+
+  @layer components {
+    .roadmap {
+      display: grid;
+      grid-template-columns: 184px repeat(5, minmax(188px, 1fr)) 196px;
+      min-width: 1320px;
+    }
+
+    .scroll-x { overflow: auto; max-height: min(82dvh, 1100px); }
+
+    .corner  { position: sticky; top: 0; left: 0; z-index: 40; background: var(--color-white); }
+    .fhead   { position: sticky; top: 0; z-index: 30; background: var(--color-white); }
+    .llabel  { position: sticky; left: 0; z-index: 20; background: color-mix(in oklab, var(--accent) 13%, white); box-shadow: inset 4px 0 0 0 var(--accent); }
+
+    .row-line { border-top: 1px solid color-mix(in oklab, var(--color-slate-300) 55%, white); }
+    .head-line { border-bottom: 1px solid var(--color-slate-200); }
+    .fhead[data-confirmed="true"] { box-shadow: inset 0 -2px 0 0 var(--color-ok); }
+
+    .cell { display: flex; flex-direction: column; gap: --spacing(3); padding: --spacing(4) --spacing(3); background: color-mix(in oklab, var(--accent) 6%, white); }
+
+    /* superseded column — set aside, neutral & minimal */
+    .fork-sep { border-left: 2px solid var(--color-slate-200); }
+    .fhead[data-muted="true"] { background: var(--color-slate-50); }
+    .cell-sup { background: var(--color-slate-50); gap: --spacing(1); }
+    .tile-mini { display: block; padding: --spacing(1.5) --spacing(2); border-radius: var(--radius-md); text-decoration: none; color: var(--color-slate-500); font-size: 12px; line-height: 1.35; }
+    .tile-mini:hover { background: var(--color-slate-100); color: var(--color-slate-700); }
+    .tile-mini .me { font-weight: 700; color: var(--color-slate-400); }
+
+    /* ---- tiles: just a kicker + a big title ---- */
+    .tile {
+      display: block;
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      padding: --spacing(4);
+      text-decoration: none;
+      box-shadow: 0 1px 2px rgb(2 6 23 / 0.05), 0 1px 3px rgb(2 6 23 / 0.04);
+      transition: transform .14s ease, box-shadow .14s ease;
+    }
+    .tile:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgb(2 6 23 / 0.12); }
+
+    .tile-confirmed { outline: 1.5px solid color-mix(in oklab, var(--color-ok) 55%, white); outline-offset: -1.5px; }
+    .chk { color: var(--color-ok); font-weight: 800; }
+    .tile-headliner.tile-confirmed { outline-color: color-mix(in oklab, var(--color-ok) 70%, var(--color-ink)); }
+    .tile-headliner .chk { color: #4ade80; }
+
+    .kick { display: flex; align-items: center; gap: --spacing(2); font-size: 13px; font-weight: 600; color: var(--color-slate-400); }
+    .dot  { width: 8px; height: 8px; border-radius: 999px; background: var(--accent); flex: none; }
+    .ttl  { margin-top: --spacing(2); font-size: 17px; line-height: 1.3; font-weight: 600; color: var(--color-slate-900); letter-spacing: -0.01em; }
+
+    .tile-headliner { background: var(--color-ink); }
+    .tile-headliner .ttl { color: var(--color-white); }
+    .tile-headliner .kick { color: color-mix(in oklab, var(--accent) 65%, white); }
+
+    .tile-northstar { background: var(--color-white); box-shadow: none; outline: 1.5px dashed var(--accent); outline-offset: -1.5px; }
+    .tile-northstar .ttl::before { content: "★ "; color: var(--accent); }
+
+    .tile-soft { background: transparent; box-shadow: none; outline: 1px dashed var(--color-slate-300); outline-offset: -1px; opacity: 0.7; }
+    .tile-soft .ttl { font-size: 15px; font-weight: 500; color: var(--color-slate-500); }
+  }
+</style>
+</head>
+
+<body class="min-h-dvh bg-slate-50 font-sans text-slate-900 antialiased">
+
+  <header class="mx-auto max-w-[1580px] px-6 pt-12 pb-7">
+    <h1 class="text-3xl/10 font-semibold tracking-tight sm:text-4xl">Ethereum State Roadmap</h1>
+    <p id="draftNote" class="mt-3 hidden text-sm/6 text-slate-500">
+      <span class="lbl font-semibold">○ Showing committed file</span> · you have an editor draft ·
+      <button id="useFile" class="font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-900">preview it</button>
+    </p>
+  </header>
+
+  <main class="mx-auto max-w-[1580px] px-3 pb-4 sm:px-6">
+    <div class="scroll-x rounded-2xl">
+      <div id="roadmap" class="roadmap"></div>
+    </div>
+
+    <footer class="flex flex-wrap items-center gap-x-5 gap-y-2 px-3 pt-6 text-sm/6 text-slate-400">
+      <span class="flex items-center gap-2"><span class="font-extrabold" style="color:var(--color-ok)">✓</span> confirmed</span>
+      <span class="flex items-center gap-2"><span class="inline-block h-3.5 w-6 rounded bg-ink"></span> headliner</span>
+      <span class="flex items-center gap-2"><span class="inline-block size-3.5 rounded" style="color:var(--color-laneF)">★</span> north star</span>
+      <span class="flex items-center gap-2"><span class="inline-block h-3.5 w-6 rounded outline outline-dashed outline-slate-300"></span> research</span>
+      <span>Tiles link to the EIP.</span>
+    </footer>
+  </main>
+
+<script src="roadmap-data.js"></script>
+<script>
+// Data comes from roadmap-data.js (window.ROADMAP). If you've arranged tiles in the
+// editor, this browser's saved draft is shown automatically (toggle in the header).
+const LS = "stateRoadmapLayout.v1";
+function readDraft(){
+  try { const r = localStorage.getItem(LS); const a = r && JSON.parse(r); return (Array.isArray(a) && a.length) ? a : null; }
+  catch { return null; }
+}
+
+const { FORKS, LANES } = window.ROADMAP;
+const DRAFT = readDraft();
+let ITEMS = window.ROADMAP.ITEMS;  // committed roadmap-data.js is authoritative; editor draft is an opt-in preview
+
+const KIND = { headliner:"tile-headliner", northstar:"tile-northstar", soft:"tile-soft" };
+
+function isEip(id){ return /^\d+$/.test(id); }
+
+const CONFIRMED = new Set(FORKS.filter(f => f.confirmed).map(f => f.id));
+
+function tile(it){
+  const ok = CONFIRMED.has(it.fork);
+  const label = isEip(it.id) ? `EIP-${it.id}` : (it.kind === "northstar" ? "north star" : it.id);
+  const kick = `<span class="dot"></span>${label}${ok ? `<span class="chk">✓</span>` : ""}`;
+  return `<a class="tile ${KIND[it.kind]||""} ${ok ? "tile-confirmed" : ""}" href="${it.link}" target="_blank" rel="noreferrer" title="${it.sum}">
+      <div class="kick">${kick}</div>
+      <div class="ttl">${it.title}</div>
+    </a>`;
+}
+
+function tileMini(it){
+  const label = isEip(it.id) ? `EIP-${it.id}` : it.id;
+  return `<a class="tile-mini" href="${it.link}" target="_blank" rel="noreferrer" title="${it.sum}"><span class="me">${label}</span> ${it.title}</a>`;
+}
+
+// Forks shown in the viewer. "superseded" is an archive bucket — managed in the editor, hidden here.
+const VFORKS = FORKS.filter(f => f.id !== "superseded");
+
+function build(){
+  const g = document.getElementById("roadmap");
+  const out = [`<div class="corner head-line"></div>`];
+
+  for (const f of VFORKS){
+    out.push(`<div class="fhead head-line px-4 py-4 ${f.sep?"fork-sep":""}" data-confirmed="${!!f.confirmed}">
+        <div class="text-lg/6 font-semibold tracking-tight text-slate-900">${f.name}</div>
+      </div>`);
+  }
+
+  for (const lane of LANES){
+    out.push(`<div class="llabel row-line px-4 py-4" style="--accent:${lane.color}">
+        <div class="flex items-center gap-2">
+          <span class="dot"></span>
+          <span class="text-[15px]/5 font-semibold" style="color:${lane.color}">${lane.name}</span>
+        </div>
+      </div>`);
+    for (const f of VFORKS){
+      const body = ITEMS.filter(it => it.lane===lane.id && it.fork===f.id).map(tile).join("");
+      out.push(`<div class="cell row-line ${f.sep?"fork-sep":""}" style="--accent:${lane.color}">${body}</div>`);
+    }
+  }
+  g.innerHTML = out.join("");
+}
+build();
+
+if (DRAFT) {
+  const note = document.getElementById("draftNote");
+  const btn = document.getElementById("useFile");
+  note.classList.remove("hidden");
+  let onDraft = false;
+  btn.onclick = () => {
+    onDraft = !onDraft;
+    ITEMS = onDraft ? DRAFT : window.ROADMAP.ITEMS;
+    build();
+    note.querySelector(".lbl").textContent = onDraft ? "● Previewing editor draft" : "○ Showing committed file";
+    btn.textContent = onDraft ? "show committed file" : "preview editor draft";
+  };
+}
+</script>
+</body>
+</html>
