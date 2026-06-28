@@ -105,7 +105,7 @@
     // D — Statelessness
     { lane:"D", fork:"glamsterdam", id:"7928", title:"Block-Level Access Lists", link:E+"7928", kind:"headliner", sum:"The block declares all state it touches → parallel execution, executionless updates. The keystone." },
     { lane:"D", fork:"hegota", id:"8268", title:"Storage Roots in BAL", link:M+"eip-8268-storage-roots-in-block-access-lists/28585", sum:"Post-block storage roots in the BAL let partial nodes verify the state root." },
-    { lane:"D", fork:"i", id:"VOPS", title:"Validity-only partial statefulness", link:M+"eip-8268-storage-roots-in-block-access-lists/28585", sum:"Nodes keep only the state needed to check validity — separating storage from special state (nullifiers, spent bits)." },
+    { lane:"D", fork:"i", id:"VOPS", title:"Validity-only partial statefulness", link:"https://ethresear.ch/t/a-pragmatic-path-towards-validity-only-partial-statelessness-vops/22236", sum:"Nodes keep only the state needed to check validity — separating storage from special state (nullifiers, spent bits)." },
     { lane:"D", fork:"beyond", id:"DSN", title:"Decentralized State Network", link:E+"7928", sum:"A peer-to-peer network that collectively serves state and witnesses, so no single node must hold it all." },
     { lane:"D", fork:"northstar", id:"Stateless clients", title:"Stateless clients", kind:"northstar", sum:"Validate blocks holding ~no state — witnesses travel with the block." },
     { lane:"D", fork:"superseded", id:"2926", title:"Code Merkleization", link:M+"eip-2926-chunk-based-code-merkleization/4555", kind:"soft", sum:"Chunked code → small witnesses for stateless clients." },
