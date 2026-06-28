@@ -135,7 +135,7 @@
       </div>
     </div>
     <p id="draftNote" class="mt-3 hidden text-sm/6 text-slate-500">
-      ○ Showing your local edits · <button id="resetLink" class="font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-900">reset to published</button>
+      You have a saved edit draft — click <span class="font-semibold">Edit</span> to resume · <button id="resetLink" class="font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-900">discard it</button>
     </p>
     <p id="editHint" class="mt-3 hidden text-sm/6 text-slate-500">
       Drag the <span class="font-semibold">⠿</span> handle to move tiles · edit fields inline · <span class="font-semibold">+ add</span> in any cell · <span class="font-semibold">Download</span> saves your <code class="rounded bg-slate-100 px-1">roadmap-data.js</code>.
@@ -184,7 +184,7 @@ const clean = () => WORKING.map(({ _uid, ...r }) => r);
 function readDraft(){ try { const r = localStorage.getItem(LS); const a = r && JSON.parse(r); return (Array.isArray(a) && a.length) ? a : null; } catch { return null; } }
 function save(){ try { localStorage.setItem(LS, JSON.stringify(clean())); } catch {} if (editing) flash("saved ✓", true); }
 
-let WORKING = withUid(readDraft() || window.ROADMAP.ITEMS);
+let WORKING = withUid(window.ROADMAP.ITEMS);   // view = the committed roadmap-data.js; the local draft is loaded only in Edit mode
 let editing = false;
 let sortables = [];
 
@@ -287,6 +287,7 @@ grid.addEventListener("click", e => {
 /* ---------- toolbar ---------- */
 function setMode(on){
   editing = on;
+  WORKING = withUid(on ? (readDraft() || window.ROADMAP.ITEMS) : window.ROADMAP.ITEMS);
   document.body.classList.toggle("editing", on);
   $("#editToggle").textContent = on ? "Done" : "Edit";
   $("#editTools").classList.toggle("hidden", !on);
