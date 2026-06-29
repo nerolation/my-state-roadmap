@@ -97,7 +97,7 @@
     { lane:"B", fork:"superseded", id:"7863", title:"Block-Level Warming", link:M+"eip-7863-block-level-warming/22572", kind:"soft", sum:"Touched state stays warm for the whole block (warm set from the BAL)." },
 
     // C — State Structure
-    { lane:"C", fork:"i", id:"8297", title:"Partitioned Binary Tree", link:M+"eip-8297-partitioned-binary-tree/28776", kind:"headliner", sum:"Splits the tree into zones (accounts, code, storage, nullifiers…)." },
+    { lane:"C", fork:"i", id:"8297", title:"Partitioned Binary Tree", link:"https://github.com/ethereum/EIPs/pull/11799", kind:"headliner", sum:"Splits the tree into zones (accounts, code, storage, nullifiers…)." },
     { lane:"C", fork:"northstar", id:"Provable state", title:"Provable state", kind:"northstar", sum:"A post-quantum, ZK-friendly tree — any state fact proven cheaply." },
     { lane:"C", fork:"superseded", id:"7864", title:"Unified Binary Tree", link:E+"7864", kind:"soft", sum:"Replaces the hexary MPT with one zoned binary tree. A multi-fork migration." },
     { lane:"C", fork:"superseded", id:"6800", title:"Verkle Trees", link:E+"6800", kind:"soft", sum:"Prior tree direction (EIP-6800 / 7612) — superseded by binary trees." },
